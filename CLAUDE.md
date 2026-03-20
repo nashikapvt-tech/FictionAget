@@ -26,6 +26,8 @@ Each skill has a `manifest.json` with trigger conditions, commands, and risk lev
 Execute skills via: `bash skills/<name>/run.sh [args]`
 
 Key skills:
+- `init` — first-time template setup (rename project name, scope, descriptions, DB names)
+- **`finish` — run this when any task is complete. Lints, tests, commits, pushes. Mandatory.**
 - `type-sync` — after changing Pydantic schemas
 - `db-migrate` — after changing SQLAlchemy models
 - `openapi-gen` — after changing API routes or schemas

@@ -24,6 +24,8 @@ Agents should:
 
 | Skill | Trigger | Description |
 |-------|---------|-------------|
+| `init` | First clone of template | Initialize template: rename project name, scope, descriptions, DB names across entire repo |
+| `finish` | **Every task completion** | Lint → test → commit → push. The mandatory last step. Never skip. |
 | `type-sync` | Pydantic model changed | Regenerates OpenAPI spec → TypeScript types → validates frontend build |
 | `db-migrate` | SQLAlchemy model changed | Creates and applies Alembic migration |
 | `openapi-gen` | Any schema change | Exports OpenAPI JSON from FastAPI app |
@@ -42,6 +44,7 @@ Agents should:
 
 Agents MUST check these trigger conditions after making changes:
 
+0. **Task complete** → Run `finish "<conventional commit message>"` — always, no exceptions
 1. **Modified a file in `apps/api/app/schemas/`** → Run `type-sync`
 2. **Modified a file in `apps/api/app/models/`** → Run `db-migrate`
 3. **Modified any Python or TypeScript file** → Run `lint-fix`
@@ -53,6 +56,7 @@ Agents MUST check these trigger conditions after making changes:
 9. **Need to start or manage the local stack** → Run `docker up|down|migrate`
 10. **Starting work on a new feature** → Run `prd-workflow init` and follow the 3-step rule-file workflow
 11. **Need to deploy manually outside CI/CD** → Run `deploy api|web` (requires gcloud auth; prefer pushing to `main`)
+12. **Just cloned this template** → Run `init` to customize the project name, scope, and identity
 
 ---
 
