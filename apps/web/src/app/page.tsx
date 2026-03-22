@@ -1,77 +1,26 @@
 "use client";
-
 import { useState } from "react";
 
 /* ─────────────────────────────────────────────────────────
-   SVG ICONS
+   COLOUR PALETTE (inline style constants)
 ───────────────────────────────────────────────────────── */
-const Icons = {
-  Sparkles: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
-    </svg>
-  ),
-  Brain: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
-    </svg>
-  ),
-  Zap: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-    </svg>
-  ),
-  Star: ({ filled = false }: { filled?: boolean }) => (
-    <svg width="16" height="16" fill={filled ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-    </svg>
-  ),
-  Check: () => (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-    </svg>
-  ),
-  ArrowRight: () => (
-    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-    </svg>
-  ),
-  ChevronDown: () => (
-    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-    </svg>
-  ),
-  Globe: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-    </svg>
-  ),
-  Clock: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
-  Shield: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-    </svg>
-  ),
-  Layers: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
-    </svg>
-  ),
-  X: () => (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  ),
-  Menu: () => (
-    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-    </svg>
-  ),
+const C = {
+  bgParchment:  "#FAF6EE",
+  bgCream:      "#F4EEE2",
+  bgCard:       "#FFFDF7",
+  bgEspresso:   "#18100A",
+  bgWalnut:     "#221712",
+  bgBark:       "#2E1E14",
+  ink:          "#18100A",
+  sepia:        "#5C4733",
+  muted:        "#998674",
+  parchment:    "#EDE0CC",
+  gold:         "#A0813A",
+  copper:       "#C49A3C",
+  borderFaint:  "rgba(92,71,51,0.10)",
+  borderLight:  "rgba(92,71,51,0.18)",
+  borderMedium: "rgba(92,71,51,0.28)",
+  borderGold:   "rgba(160,129,58,0.30)",
 };
 
 /* ─────────────────────────────────────────────────────────
@@ -79,93 +28,75 @@ const Icons = {
 ───────────────────────────────────────────────────────── */
 const features = [
   {
-    icon: Icons.Brain,
+    numeral: "I",
     title: "Deep AI Analysis",
-    desc: "Our multi-agent pipeline doesn't just skim — it reads every page, cross-references themes, and builds a semantic understanding of the entire work.",
-    color: "#6366F1",
-    glow: "rgba(99,102,241,0.15)",
+    desc: "Our multi-agent pipeline reads every page, cross-references themes, and builds a semantic map of the entire work — not merely a surface skim.",
   },
   {
-    icon: Icons.Zap,
+    numeral: "II",
     title: "60-Second Summaries",
-    desc: "From upload to insight in under a minute. Optimised inference pipelines deliver structured summaries faster than any human speed-reader.",
-    color: "#F59E0B",
-    glow: "rgba(245,158,11,0.15)",
+    desc: "From upload to insight in under a minute. Parallel inference pipelines distil thousands of pages into structured wisdom at extraordinary speed.",
   },
   {
-    icon: Icons.Layers,
+    numeral: "III",
     title: "Multi-Layer Outputs",
-    desc: "Choose your depth: one-paragraph overview, chapter-by-chapter breakdown, key concepts map, or full Socratic Q&A — all from one scan.",
-    color: "#A855F7",
-    glow: "rgba(168,85,247,0.15)",
+    desc: "Choose your depth: a single-paragraph précis, chapter-by-chapter breakdown, key concepts map, or a full Socratic Q&A — all from one scan.",
   },
   {
-    icon: Icons.Globe,
+    numeral: "IV",
     title: "50+ Languages",
-    desc: "Summarise in any language. Read a Japanese novel, get insights in English. Translate summaries on-the-fly with full fidelity.",
-    color: "#10B981",
-    glow: "rgba(16,185,129,0.15)",
+    desc: "Read a Japanese novel, receive insights in English. Translate summaries with full semantic fidelity across more than fifty languages.",
   },
   {
-    icon: Icons.Shield,
-    title: "Privacy First",
-    desc: "Your books never leave your hands unencrypted. Zero-knowledge processing means our models read but we never store your content.",
-    color: "#EC4899",
-    glow: "rgba(236,72,153,0.15)",
+    numeral: "V",
+    title: "Privacy by Design",
+    desc: "Zero-knowledge processing. Your books are analysed in isolated, ephemeral sessions and permanently deleted within 24 hours. We read; we never keep.",
   },
   {
-    icon: Icons.Clock,
+    numeral: "VI",
     title: "Reading Queue",
-    desc: "Build a personal library. Queue books overnight, wake up to a morning brief of everything you planned to read this week.",
-    color: "#3B82F6",
-    glow: "rgba(59,130,246,0.15)",
+    desc: "Build a personal library. Queue a dozen books overnight and wake to a morning brief of everything you intended to absorb this week.",
   },
 ];
 
 const steps = [
   {
-    num: "01",
-    title: "Drop your book",
-    desc: "Upload any PDF, EPUB, or paste a URL. We support 40+ file formats including scanned images via OCR.",
-    icon: "📚",
+    numeral: "I",
+    title: "Submit your book",
+    desc: "Upload any PDF, EPUB, MOBI, or paste a URL. Forty file formats supported, including scanned pages via optical character recognition.",
   },
   {
-    num: "02",
-    title: "Agents go to work",
-    desc: "Our AI agent swarm divides the text, analyses in parallel, then synthesises — distilling thousands of pages into structured wisdom.",
-    icon: "🤖",
+    numeral: "II",
+    title: "The agents deliberate",
+    desc: "A swarm of specialised AI agents divides the text, analyses in parallel — one for structure, one for ideas, one for tone — then a synthesis agent reconciles all findings.",
   },
   {
-    num: "03",
-    title: "Read smarter",
-    desc: "Get your personalised brief: key ideas, memorable quotes, action items, and a 10-question quiz to lock in the knowledge.",
-    icon: "✨",
+    numeral: "III",
+    title: "Wisdom, delivered",
+    desc: "Receive your personalised brief: key ideas, memorable passages, actionable items, and a ten-question retention quiz to cement what you have learned.",
   },
 ];
 
 const testimonials = [
   {
+    quote: "I read two or three business books each week for investment research. PageMind reduced that time by eighty percent without sacrificing a single insight. It is the only AI tool that genuinely understands context.",
     name: "Priya Malhotra",
     role: "Founder, BookStack VC",
-    avatar: "PM",
-    avatarColor: "#6366F1",
-    quote: "I read 2–3 business books a week for research. PageMind cut that time by 80% without sacrificing depth. It's the only AI tool that actually understands context.",
+    initials: "PM",
     books: 247,
   },
   {
+    quote: "For my dissertation I processed forty academic texts over a single weekend. The chapter-level analysis is extraordinary, and the cross-reference capability alone justifies the subscription ten times over.",
     name: "Marcus Chen",
-    role: "PhD Researcher, Oxford",
-    avatar: "MC",
-    avatarColor: "#A855F7",
-    quote: "The chapter-level analysis is extraordinary. For my dissertation I processed 40 academic texts in a weekend. The cross-reference feature alone is worth 10x the price.",
+    role: "DPhil Researcher, Oxford",
+    initials: "MC",
     books: 412,
   },
   {
+    quote: "We deployed this across two hundred employees. Knowledge-retention scores in our quarterly reviews rose thirty-four percent. People are reading again — only more deliberately.",
     name: "Sofia Reyes",
-    role: "Head of L&D, Stripe",
-    avatar: "SR",
-    avatarColor: "#F59E0B",
-    quote: "We rolled this out to 200 employees. Knowledge retention scores in our quarterly reviews jumped 34%. People are actually reading again — just smarter.",
+    role: "Head of Learning & Development, Stripe",
+    initials: "SR",
     books: 89,
   },
 ];
@@ -173,111 +104,111 @@ const testimonials = [
 const plans = [
   {
     name: "Reader",
+    latin: "Lector",
     price: "0",
-    period: "forever",
-    desc: "Perfect for curious minds",
-    colorBg: "rgba(255,255,255,0.04)",
-    border: "rgba(255,255,255,0.1)",
-    cta: "Start free",
-    ctaStyle: "border" as const,
-    features: ["5 summaries / month", "1-paragraph overview", "10 languages", "PDF & EPUB", "Basic Q&A"],
-    missing: ["Chapter analysis", "Audio brief", "Team sharing", "API access"],
+    period: "free, perpetually",
+    desc: "For the curious mind",
+    features: ["5 summaries per month", "Single-paragraph précis", "Ten languages", "PDF & EPUB", "Basic Q&A"],
+    missing: ["Chapter analysis", "Audio digest", "Team library", "API access"],
+    style: "outline" as const,
   },
   {
     name: "Scholar",
+    latin: "Scholaris",
     price: "19",
     period: "per month",
-    desc: "For serious learners",
-    colorBg: "rgba(99,102,241,0.12)",
-    border: "rgba(99,102,241,0.5)",
-    cta: "Start free trial",
-    ctaStyle: "primary" as const,
-    badge: "Most Popular",
-    features: ["Unlimited summaries", "Full chapter breakdown", "50+ languages", "All formats + OCR", "Deep Q&A & quizzes", "Audio brief", "Key concepts map"],
-    missing: ["Team sharing", "API access"],
+    desc: "For the serious reader",
+    badge: "Most Chosen",
+    features: ["Unlimited summaries", "Full chapter breakdown", "50+ languages", "All formats + OCR", "Deep Q&A & quizzes", "Audio digest", "Concept map"],
+    missing: ["Team library", "API access"],
+    style: "featured" as const,
   },
   {
     name: "Library",
+    latin: "Bibliotheca",
     price: "79",
     period: "per month",
-    desc: "For teams & organisations",
-    colorBg: "rgba(245,158,11,0.05)",
-    border: "rgba(245,158,11,0.3)",
-    cta: "Contact sales",
-    ctaStyle: "gold" as const,
-    features: ["Everything in Scholar", "Unlimited team seats", "Shared reading queue", "API access", "Custom summaries", "Priority processing", "SSO & audit logs"],
+    desc: "For teams & institutions",
+    features: ["Everything in Scholar", "Unlimited seats", "Shared reading queue", "Full API access", "Custom summaries", "Priority processing", "SSO & audit logs"],
     missing: [],
+    style: "gold" as const,
   },
 ];
 
 const stats = [
-  { value: "4.2M+", label: "Books Summarised" },
-  { value: "98%", label: "Accuracy Rating" },
-  { value: "127K+", label: "Active Readers" },
-  { value: "60s", label: "Avg. Processing Time" },
+  { value: "4.2M+", label: "Books Analysed" },
+  { value: "98%",   label: "Accuracy Rating" },
+  { value: "127K+", label: "Active Scholars" },
+  { value: "60s",   label: "Avg. Processing" },
 ];
 
 const books = [
-  { title: "Atomic Habits", author: "James Clear", color: "#1E3A8A", accent: "#3B82F6", emoji: "⚡" },
-  { title: "Thinking, Fast and Slow", author: "Daniel Kahneman", color: "#1E1B4B", accent: "#8B5CF6", emoji: "🧠" },
-  { title: "The Lean Startup", author: "Eric Ries", color: "#14532D", accent: "#22C55E", emoji: "🚀" },
-  { title: "Sapiens", author: "Yuval Noah Harari", color: "#431407", accent: "#F97316", emoji: "🌍" },
-  { title: "Zero to One", author: "Peter Thiel", color: "#1C1917", accent: "#D4D4D8", emoji: "🔮" },
-  { title: "Deep Work", author: "Cal Newport", color: "#1E293B", accent: "#38BDF8", emoji: "🎯" },
+  { title: "Atomic Habits",           author: "James Clear",        spine: "#1B2A4A", accent: "#4A7CB5", label: "Self-Improvement",  emoji: "⚡" },
+  { title: "Thinking, Fast and Slow", author: "Daniel Kahneman",    spine: "#2B1A3A", accent: "#7A5BAA", label: "Psychology",        emoji: "🧠" },
+  { title: "The Lean Startup",        author: "Eric Ries",           spine: "#1A3020", accent: "#4A8C5C", label: "Business",          emoji: "🚀" },
+  { title: "Sapiens",                 author: "Yuval Noah Harari",   spine: "#3A1A0A", accent: "#C47A3A", label: "History",           emoji: "🌍" },
+  { title: "Zero to One",             author: "Peter Thiel",         spine: "#1A1A1A", accent: "#8C8C8C", label: "Entrepreneurship",  emoji: "◆" },
+  { title: "Deep Work",               author: "Cal Newport",         spine: "#1A2A3A", accent: "#4A7C9A", label: "Productivity",      emoji: "🎯" },
 ];
 
 const faqs = [
   {
     q: "How accurate are the summaries?",
-    a: "Our agent pipeline achieves 98%+ fidelity on structured non-fiction. For fiction we focus on themes, character arcs, and narrative beats. Every summary includes a confidence score.",
+    a: "Our agent pipeline achieves above 98% fidelity on structured non-fiction. For fiction, the focus is themes, character arcs, and narrative arc. Every summary carries a confidence score.",
   },
   {
-    q: "What file formats do you support?",
-    a: "PDF, EPUB, MOBI, DOCX, TXT, and URLs. For scanned books we run OCR with 99.2% character accuracy before summarisation.",
+    q: "Which file formats are supported?",
+    a: "PDF, EPUB, MOBI, DOCX, TXT, and web URLs. For scanned physical books we apply OCR at 99.2% character accuracy before summarisation begins.",
   },
   {
-    q: "Can I summarise copyrighted books?",
-    a: "Yes — you must own or have rights to the content. We process your files, we don't distribute them. All content is deleted from our servers within 24 hours.",
+    q: "May I summarise copyrighted works?",
+    a: "Yes — you must own or hold rights to the material. We process your files and do not distribute them. All content is permanently deleted from our servers within 24 hours of processing.",
   },
   {
-    q: "How does the multi-agent system work?",
-    a: "We spawn a swarm of specialised agents: one for narrative structure, one for key concepts, one for quotations, one for sentiment/tone. A synthesis agent then merges and ranks insights by importance.",
+    q: "How does the multi-agent architecture function?",
+    a: "We instantiate a swarm of specialised agents: one for narrative structure, one for key concepts, one for notable passages, one for sentiment and tone. A synthesis agent reconciles and ranks all findings by significance.",
   },
 ];
 
 /* ─────────────────────────────────────────────────────────
-   STARS BACKGROUND
+   ICONS (minimal, line-weight SVGs)
 ───────────────────────────────────────────────────────── */
-function Stars() {
-  const positions = [
-    { top: "8%",  left: "12%", delay: "0s",   size: 2, dur: "3s"  },
-    { top: "15%", left: "35%", delay: "0.8s",  size: 3, dur: "4.2s" },
-    { top: "22%", left: "72%", delay: "1.6s",  size: 2, dur: "3.8s" },
-    { top: "5%",  left: "88%", delay: "2.4s",  size: 2, dur: "5s"   },
-    { top: "38%", left: "5%",  delay: "0.4s",  size: 3, dur: "4s"   },
-    { top: "45%", left: "92%", delay: "1.2s",  size: 2, dur: "3.4s" },
-    { top: "60%", left: "18%", delay: "2s",    size: 2, dur: "4.6s" },
-    { top: "70%", left: "80%", delay: "0.6s",  size: 3, dur: "3.2s" },
-    { top: "80%", left: "50%", delay: "1.8s",  size: 2, dur: "5.2s" },
-    { top: "90%", left: "30%", delay: "3s",    size: 2, dur: "4.8s" },
-    { top: "12%", left: "60%", delay: "2.2s",  size: 2, dur: "3.6s" },
-    { top: "55%", left: "43%", delay: "1.4s",  size: 3, dur: "4.4s" },
-  ];
+const ChevronDown = () => (
+  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+  </svg>
+);
+const ArrowRight = () => (
+  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+  </svg>
+);
+const Check = () => (
+  <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+  </svg>
+);
+const MenuIcon = () => (
+  <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+  </svg>
+);
+const CloseIcon = () => (
+  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+/* ─────────────────────────────────────────────────────────
+   ORNAMENT DIVIDER
+───────────────────────────────────────────────────────── */
+function Ornament({ symbol = "§", light = false }: { symbol?: string; light?: boolean }) {
+  const color = light ? "rgba(196,154,60,0.35)" : "rgba(160,129,58,0.35)";
   return (
-    <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-      {positions.map((s, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full animate-twinkle"
-          style={{
-            top: s.top, left: s.left,
-            width: s.size, height: s.size,
-            background: "#fff",
-            animationDelay: s.delay,
-            animationDuration: s.dur,
-          }}
-        />
-      ))}
+    <div className="flex items-center gap-4 my-2" style={{ color }}>
+      <div style={{ flex: 1, borderTop: `1px solid ${color}` }} />
+      <span style={{ fontSize: "0.85rem", fontStyle: "italic" }}>{symbol}</span>
+      <div style={{ flex: 1, borderTop: `1px solid ${color}` }} />
     </div>
   );
 }
@@ -287,85 +218,88 @@ function Stars() {
 ───────────────────────────────────────────────────────── */
 function Navbar() {
   const [open, setOpen] = useState(false);
+
   return (
     <nav
-      className="fixed top-0 left-0 right-0"
+      className="fixed top-0 left-0 right-0 z-50"
       style={{
-        background: "rgba(8,7,26,0.85)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        zIndex: 100,
+        background: "rgba(250,246,238,0.92)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        borderBottom: `1px solid ${C.borderFaint}`,
       }}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-2.5">
+        <a href="#" className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: "linear-gradient(135deg,#6366F1,#A855F7)" }}
-          >P</div>
-          <span className="font-semibold text-white text-lg tracking-tight">
-            Page<span className="text-gradient">Mind</span>
+            className="w-7 h-7 rounded flex items-center justify-center text-xs font-bold"
+            style={{ background: C.bgEspresso, color: C.parchment }}
+          >
+            P
+          </div>
+          <span style={{ fontSize: "1.1rem", color: C.ink, letterSpacing: "-0.01em" }}>
+            Page<em>Mind</em>
           </span>
-        </div>
+        </a>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {[
             { label: "Features", href: "#features" },
-            { label: "How it works", href: "#how-it-works" },
+            { label: "Method", href: "#method" },
             { label: "Pricing", href: "#pricing" },
             { label: "FAQ", href: "#faq" },
-          ].map((item) => (
+          ].map(({ label, href }) => (
             <a
-              key={item.label}
-              href={item.href}
-              style={{ color: "rgba(255,255,255,0.6)", transition: "color 0.2s" }}
-              className="text-sm hover:text-white"
+              key={label}
+              href={href}
+              className="label-caps transition-colors"
+              style={{ color: C.muted }}
+              onMouseEnter={e => ((e.target as HTMLElement).style.color = C.sepia)}
+              onMouseLeave={e => ((e.target as HTMLElement).style.color = C.muted)}
             >
-              {item.label}
+              {label}
             </a>
           ))}
         </div>
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            className="text-sm px-4 py-2 rounded-lg transition-colors"
-            style={{ color: "rgba(255,255,255,0.7)" }}
-          >
-            Log in
+          <button className="label-caps px-4 py-2 rounded" style={{ color: C.muted }}>
+            Sign in
           </button>
-          <button className="btn-primary text-white text-sm font-medium px-5 py-2 rounded-lg">
-            Get started free
+          <button
+            className="btn-ink label-caps px-5 py-2.5 rounded"
+          >
+            Begin reading →
           </button>
         </div>
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)}>
-          {open ? <Icons.X /> : <Icons.Menu />}
+        <button className="md:hidden" style={{ color: C.sepia }} onClick={() => setOpen(!open)}>
+          {open ? <CloseIcon /> : <MenuIcon />}
         </button>
       </div>
 
       {open && (
         <div
-          className="md:hidden px-6 pb-6 pt-2 flex flex-col gap-4"
-          style={{ background: "rgba(8,7,26,0.98)" }}
+          className="md:hidden px-6 py-5 flex flex-col gap-5"
+          style={{ background: C.bgParchment, borderTop: `1px solid ${C.borderFaint}` }}
         >
-          {["Features", "How it works", "Pricing", "FAQ"].map((item) => (
+          {["Features", "Method", "Pricing", "FAQ"].map(item => (
             <a
               key={item}
-              href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-              className="text-sm"
-              style={{ color: "rgba(255,255,255,0.7)" }}
+              href={`#${item.toLowerCase()}`}
+              className="label-caps"
+              style={{ color: C.sepia }}
               onClick={() => setOpen(false)}
             >
               {item}
             </a>
           ))}
-          <button className="btn-primary text-white text-sm font-medium px-5 py-2.5 rounded-lg mt-2">
-            Get started free
+          <button className="btn-ink label-caps px-5 py-3 rounded mt-1">
+            Begin reading →
           </button>
         </div>
       )}
@@ -376,95 +310,95 @@ function Navbar() {
 /* ─────────────────────────────────────────────────────────
    HERO
 ───────────────────────────────────────────────────────── */
-function HeroSection() {
+function Hero() {
   const [email, setEmail] = useState("");
+
   return (
     <section
-      className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden"
-      style={{ zIndex: 1 }}
+      className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden paper-texture"
+      style={{ background: C.bgEspresso }}
     >
-      {/* Background glows */}
-      <div className="absolute inset-0 hero-glow pointer-events-none" />
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 65%)" }}
-      />
-      <div className="absolute inset-0 grid-pattern opacity-30 pointer-events-none" />
+      {/* Subtle inner frame */}
+      <div className="frame-inset rounded-2xl" />
 
-      {/* Floating book decorations */}
+      {/* Very soft warm glow */}
       <div
-        className="absolute top-28 left-[7%] hidden lg:block animate-float"
-        style={{ filter: "drop-shadow(0 8px 24px rgba(99,102,241,0.5))" }}
-      >
-        <div
-          className="w-12 h-16 rounded-r flex items-center justify-center text-2xl"
-          style={{
-            background: "linear-gradient(135deg,#1E1B4B,#312E81)",
-            border: "1px solid rgba(99,102,241,0.4)",
-            transform: "rotate(-12deg)",
-          }}
-        >📖</div>
-      </div>
-      <div
-        className="absolute top-36 right-[9%] hidden lg:block animate-float-delayed"
-        style={{ filter: "drop-shadow(0 8px 24px rgba(245,158,11,0.4))" }}
-      >
-        <div
-          className="w-10 h-14 rounded-r flex items-center justify-center text-xl"
-          style={{
-            background: "linear-gradient(135deg,#451A03,#78350F)",
-            border: "1px solid rgba(245,158,11,0.4)",
-            transform: "rotate(8deg)",
-          }}
-        >📚</div>
-      </div>
-      <div
-        className="absolute bottom-36 left-[14%] hidden lg:block animate-float-slow"
-        style={{ filter: "drop-shadow(0 8px 24px rgba(168,85,247,0.4))" }}
-      >
-        <div
-          className="w-9 h-12 rounded-r flex items-center justify-center text-lg"
-          style={{
-            background: "linear-gradient(135deg,#2E1065,#4C1D95)",
-            border: "1px solid rgba(168,85,247,0.4)",
-            transform: "rotate(5deg)",
-          }}
-        >🔮</div>
-      </div>
-
-      {/* Badge */}
-      <div
-        className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 text-sm font-medium"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: "rgba(99,102,241,0.1)",
-          border: "1px solid rgba(99,102,241,0.35)",
-          color: "#A5B4FC",
+          background: "radial-gradient(ellipse 70% 50% at 50% -5%, rgba(160,129,58,0.10) 0%, transparent 70%)",
         }}
-      >
-        <Icons.Sparkles />
-        Powered by multi-agent AI
+      />
+
+      {/* Floating books */}
+      <div className="absolute top-32 left-[6%] hidden lg:block animate-float-a" style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.5))" }}>
+        <div className="w-11 h-[3.8rem] rounded-sm overflow-hidden" style={{ background: "linear-gradient(180deg,#1B2A4A,#243560)", border: "1px solid rgba(74,124,181,0.25)" }}>
+          <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem" }}>⚡</div>
+        </div>
+      </div>
+      <div className="absolute top-44 right-[8%] hidden lg:block animate-float-b" style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.5))" }}>
+        <div className="w-10 h-[3.4rem] rounded-sm overflow-hidden" style={{ background: "linear-gradient(180deg,#3A1A0A,#5C2E14)", border: "1px solid rgba(196,122,58,0.25)" }}>
+          <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>🌍</div>
+        </div>
+      </div>
+      <div className="absolute bottom-40 left-[13%] hidden lg:block animate-float-c" style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.5))" }}>
+        <div className="w-9 h-[3rem] rounded-sm overflow-hidden" style={{ background: "linear-gradient(180deg,#2B1A3A,#3D2558)", border: "1px solid rgba(122,91,170,0.25)" }}>
+          <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem" }}>🧠</div>
+        </div>
+      </div>
+
+      {/* Edition label */}
+      <div className="mb-8 text-center">
+        <span
+          className="label-caps"
+          style={{ color: "rgba(196,154,60,0.6)", letterSpacing: "0.22em" }}
+        >
+          Est. 2026 &ensp;·&ensp; AI Reading Intelligence
+        </span>
+      </div>
+
+      {/* Ornament above headline */}
+      <div className="w-full max-w-2xl mb-6">
+        <Ornament symbol="✦" light />
       </div>
 
       {/* Headline */}
       <h1
-        className="text-center font-bold leading-[1.1] mb-6 max-w-4xl"
-        style={{ fontSize: "clamp(2.4rem,6vw,4.5rem)", letterSpacing: "-0.02em" }}
+        className="text-center font-bold leading-[1.08] mb-6 max-w-3xl"
+        style={{
+          fontSize: "clamp(2.4rem,5.5vw,4.2rem)",
+          color: C.parchment,
+          letterSpacing: "-0.02em",
+          fontFamily: "Georgia, serif",
+        }}
       >
-        <span style={{ color: "#F1EEE9" }}>Turn any book into</span>
+        Turn any book into
         <br />
-        <span className="text-shimmer">actionable wisdom</span>
+        <em className="text-gradient-cream" style={{ fontStyle: "italic" }}>
+          actionable wisdom
+        </em>
         <br />
-        <span style={{ color: "#F1EEE9" }}>in </span>
-        <span style={{ color: "#F59E0B" }}>60 seconds.</span>
+        in{" "}
+        <span style={{ color: C.copper }}>sixty seconds.</span>
       </h1>
+
+      {/* Ornament below headline */}
+      <div className="w-full max-w-2xl mb-8">
+        <Ornament symbol="✦" light />
+      </div>
 
       {/* Subheading */}
       <p
-        className="text-center text-lg leading-relaxed mb-10 max-w-2xl"
-        style={{ color: "rgba(241,238,233,0.55)" }}
+        className="text-center mb-10 max-w-xl leading-relaxed"
+        style={{
+          fontSize: "1.05rem",
+          color: "rgba(237,224,204,0.55)",
+          fontStyle: "italic",
+          fontFamily: "Georgia, serif",
+        }}
       >
-        PageMind deploys a swarm of specialised AI agents that read, analyse, and synthesise
-        any book — so you absorb the big ideas without the time investment.
+        PageMind deploys a swarm of specialised AI agents that read, analyse,
+        and synthesise any book — so you may absorb the grand ideas without
+        surrendering the hours.
       </p>
 
       {/* Email capture */}
@@ -472,88 +406,110 @@ function HeroSection() {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          className="flex-1 px-5 py-3.5 rounded-xl text-sm outline-none"
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Your email address"
+          className="flex-1 px-5 py-3.5 rounded text-sm outline-none"
           style={{
-            background: "rgba(255,255,255,0.07)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            color: "#F1EEE9",
+            background: "rgba(255,255,255,0.05)",
+            border: `1px solid rgba(196,154,60,0.2)`,
+            color: C.parchment,
+            fontFamily: "Georgia, serif",
           }}
         />
-        <button className="btn-primary text-white font-semibold px-6 py-3.5 rounded-xl text-sm whitespace-nowrap flex items-center justify-center gap-2">
-          Start for free <Icons.ArrowRight />
+        <button
+          className="btn-cream px-6 py-3.5 rounded text-sm whitespace-nowrap flex items-center justify-center gap-2"
+        >
+          Begin reading <ArrowRight />
         </button>
       </div>
-      <p className="text-xs mb-14" style={{ color: "rgba(255,255,255,0.3)" }}>
-        No credit card required · 5 free summaries every month
+
+      <p
+        className="label-caps mb-16"
+        style={{ color: "rgba(255,255,255,0.2)", letterSpacing: "0.14em" }}
+      >
+        No card required &ensp;·&ensp; Five summaries free each month
       </p>
 
-      {/* Preview window */}
+      {/* Preview card */}
       <div
-        className="w-full max-w-3xl rounded-2xl overflow-hidden"
+        className="w-full max-w-2xl rounded-xl overflow-hidden"
         style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.6), 0 0 80px rgba(99,102,241,0.08)",
+          background: "#1E1610",
+          border: `1px solid rgba(196,154,60,0.15)`,
+          boxShadow: "0 32px 80px rgba(0,0,0,0.55)",
         }}
       >
         {/* Title bar */}
         <div
           className="flex items-center gap-2 px-5 py-3"
-          style={{ background: "rgba(0,0,0,0.35)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+          style={{ background: "rgba(0,0,0,0.3)", borderBottom: `1px solid rgba(196,154,60,0.10)` }}
         >
-          <div className="w-3 h-3 rounded-full" style={{ background: "#FF5F57" }} />
-          <div className="w-3 h-3 rounded-full" style={{ background: "#FFBD2E" }} />
-          <div className="w-3 h-3 rounded-full" style={{ background: "#28C840" }} />
-          <span className="ml-3 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
-            pagemind.ai — Atomic Habits by James Clear
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#FF5F57" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#FFBD2E" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#28C840" }} />
+          <span className="ml-3 label-caps" style={{ color: "rgba(237,224,204,0.28)", fontSize: "0.62rem" }}>
+            pagemind.ai &ensp;—&ensp; Atomic Habits · James Clear
           </span>
         </div>
 
         <div className="p-6 sm:p-8">
           <div className="flex items-start gap-5">
-            {/* Book cover */}
+            {/* Spine */}
             <div
-              className="w-14 h-20 rounded-lg flex-shrink-0 flex items-center justify-center text-2xl relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#1E3A8A,#1D4ED8)" }}
+              className="w-14 h-20 rounded-sm flex-shrink-0 flex items-center justify-center text-2xl relative overflow-hidden"
+              style={{ background: "linear-gradient(180deg,#1B2A4A,#243560)" }}
             >
-              <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent 60%)" }} />
+              <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.08), transparent 55%)" }} />
               <span className="relative z-10">⚡</span>
             </div>
+
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <h3 className="font-semibold text-white">Atomic Habits</h3>
+              <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+                <span style={{ fontFamily: "Georgia, serif", color: C.parchment, fontWeight: 600 }}>Atomic Habits</span>
                 <span
-                  className="text-xs px-2 py-0.5 rounded-full"
-                  style={{ background: "rgba(34,197,94,0.15)", color: "#4ADE80", border: "1px solid rgba(34,197,94,0.2)" }}
-                >✓ Analysed</span>
+                  className="label-caps px-2 py-0.5 rounded-sm"
+                  style={{ background: "rgba(40,200,64,0.12)", color: "#5DCE71", fontSize: "0.58rem", border: "1px solid rgba(40,200,64,0.2)" }}
+                >
+                  ✓ Analysed
+                </span>
               </div>
-              <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
-                James Clear · 320 pages · Non-fiction · Business
+              <p className="label-caps mb-3" style={{ color: "rgba(237,224,204,0.35)", fontSize: "0.6rem" }}>
+                James Clear &ensp;·&ensp; 320 pages &ensp;·&ensp; Self-Improvement
               </p>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(241,238,233,0.7)" }}>
-                <strong style={{ color: "#A5B4FC" }}>Core Idea:</strong>{" "}
-                Tiny 1% improvements compound into remarkable results over time.
-                Identity-based habits (who you want to be) outlast outcome-based goals.
-                The 4-step loop — Cue, Craving, Response, Reward — is the engine behind every behaviour.
+              <p
+                style={{
+                  fontSize: "0.88rem",
+                  lineHeight: 1.7,
+                  color: "rgba(237,224,204,0.65)",
+                  fontFamily: "Georgia, serif",
+                }}
+              >
+                <em style={{ color: C.copper }}>Core thesis:</em>{" "}
+                Marginal 1% improvements compound into extraordinary results over time. Identity-based habits — anchored in who you wish to become — outlast outcome-based goals. The four-stage loop of Cue, Craving, Response, and Reward governs every human behaviour.
               </p>
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3">
+          <div
+            className="mt-6 grid grid-cols-3 gap-3"
+            style={{ borderTop: `1px solid rgba(196,154,60,0.10)`, paddingTop: "1.25rem" }}
+          >
             {[
               { label: "Key Ideas", value: "12 extracted" },
-              { label: "Time saved", value: "4h 20m" },
+              { label: "Time Saved", value: "4 h 20 m" },
               { label: "Quiz", value: "10 questions" },
-            ].map((item) => (
+            ].map(item => (
               <div
                 key={item.label}
-                className="rounded-xl p-3 text-center"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+                className="rounded text-center py-3"
+                style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(196,154,60,0.08)` }}
               >
-                <div className="text-sm font-semibold" style={{ color: "#A5B4FC" }}>{item.value}</div>
-                <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{item.label}</div>
+                <div style={{ color: C.copper, fontFamily: "Georgia, serif", fontSize: "0.9rem", fontWeight: 600 }}>
+                  {item.value}
+                </div>
+                <div className="label-caps mt-0.5" style={{ color: "rgba(237,224,204,0.3)", fontSize: "0.55rem" }}>
+                  {item.label}
+                </div>
               </div>
             ))}
           </div>
@@ -564,30 +520,34 @@ function HeroSection() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   STATS
+   STATS BAR
 ───────────────────────────────────────────────────────── */
 function StatsBar() {
   return (
     <section
-      className="py-14 px-6 relative"
       style={{
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        zIndex: 1,
+        background: C.bgCream,
+        borderTop: `1px solid ${C.borderFaint}`,
+        borderBottom: `1px solid ${C.borderFaint}`,
       }}
     >
-      <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="max-w-5xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((s, i) => (
           <div key={s.label} className="text-center">
             <div
-              className="text-3xl sm:text-4xl font-bold mb-1.5"
               style={{
-                color: i === 0 ? "#A5B4FC" : i === 1 ? "#4ADE80" : i === 2 ? "#F59E0B" : "#C084FC",
+                fontFamily: "Georgia, serif",
+                fontSize: "2.4rem",
+                fontWeight: 700,
+                color: i % 2 === 0 ? C.ink : C.sepia,
+                letterSpacing: "-0.02em",
               }}
             >
               {s.value}
             </div>
-            <div className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
+            <div className="label-caps mt-1" style={{ color: C.muted }}>
+              {s.label}
+            </div>
           </div>
         ))}
       </div>
@@ -598,42 +558,65 @@ function StatsBar() {
 /* ─────────────────────────────────────────────────────────
    FEATURES
 ───────────────────────────────────────────────────────── */
-function FeaturesSection() {
+function Features() {
   return (
-    <section id="features" className="py-28 px-6 relative overflow-hidden" style={{ zIndex: 1 }}>
-      <div className="absolute inset-0 section-glow-left pointer-events-none" />
-      <div className="max-w-7xl mx-auto">
+    <section id="features" style={{ background: C.bgParchment, position: "relative" }}>
+      <div className="grid-paper absolute inset-0 pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 py-28 relative">
+
+        {/* Header */}
         <div className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5 text-xs font-bold uppercase tracking-widest"
-            style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.3)", color: "#C084FC" }}
-          >Features</div>
+          <p className="label-caps mb-4" style={{ color: C.gold }}>
+            Features
+          </p>
           <h2
-            className="font-bold mb-5"
-            style={{ fontSize: "clamp(2rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(2rem,4vw,3rem)",
+              color: C.ink,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.15,
+            }}
           >
             Reading intelligence,{" "}
-            <span className="text-gradient">reimagined</span>
+            <em className="text-gradient-sepia">reconceived.</em>
           </h2>
-          <p className="max-w-xl mx-auto text-lg" style={{ color: "rgba(255,255,255,0.45)" }}>
-            Every feature is built by readers obsessed with extracting maximum value from every page.
+          <div className="max-w-sm mx-auto mt-6">
+            <Ornament />
+          </div>
+          <p
+            className="mt-4 max-w-lg mx-auto"
+            style={{ color: C.muted, fontStyle: "italic", lineHeight: 1.75, fontSize: "1rem" }}
+          >
+            Every capability exists to serve one end: that you absorb more,
+            in less time, and retain it for longer.
           </p>
         </div>
 
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="glass-card glass-card-hover rounded-2xl p-7"
-            >
+          {features.map(f => (
+            <div key={f.numeral} className="card-parchment rounded-xl p-7">
               <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: f.glow, border: `1px solid ${f.color}50`, color: f.color }}
+                className="label-caps mb-5"
+                style={{ color: C.copper, fontSize: "0.65rem", letterSpacing: "0.18em" }}
               >
-                <f.icon />
+                {f.numeral}.
               </div>
-              <h3 className="font-semibold text-lg mb-2.5" style={{ color: "#F1EEE9" }}>{f.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.48)" }}>{f.desc}</p>
+              <h3
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "1.1rem",
+                  color: C.ink,
+                  marginBottom: "0.75rem",
+                  fontWeight: 700,
+                }}
+              >
+                {f.title}
+              </h3>
+              <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: C.muted, fontStyle: "italic" }}>
+                {f.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -643,54 +626,82 @@ function FeaturesSection() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   HOW IT WORKS
+   METHOD (HOW IT WORKS)
 ───────────────────────────────────────────────────────── */
-function HowItWorksSection() {
+function Method() {
   return (
-    <section id="how-it-works" className="py-28 px-6 relative overflow-hidden" style={{ zIndex: 1 }}>
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(99,102,241,0.05) 0%, transparent 70%)" }}
-      />
-      <div className="absolute inset-0 grid-pattern opacity-15 pointer-events-none" />
-      <div className="max-w-5xl mx-auto">
+    <section id="method" style={{ background: C.bgCream, position: "relative" }}>
+      <div className="max-w-5xl mx-auto px-6 py-28">
         <div className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5 text-xs font-bold uppercase tracking-widest"
-            style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.3)", color: "#A5B4FC" }}
-          >How it works</div>
+          <p className="label-caps mb-4" style={{ color: C.gold }}>Method</p>
           <h2
-            className="font-bold mb-4"
-            style={{ fontSize: "clamp(2rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(2rem,4vw,3rem)",
+              color: C.ink,
+              letterSpacing: "-0.02em",
+            }}
           >
-            Three steps to{" "}
-            <span className="text-gradient">read smarter</span>
+            Three steps to read{" "}
+            <em className="text-gradient-sepia">with greater purpose.</em>
           </h2>
+          <div className="max-w-sm mx-auto mt-6">
+            <Ornament />
+          </div>
         </div>
 
-        <div className="space-y-16">
+        <div className="space-y-20">
           {steps.map((step, i) => (
             <div
-              key={step.num}
-              className={`flex flex-col md:flex-row items-center gap-10 md:gap-16 ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}
+              key={step.numeral}
+              className={`flex flex-col md:flex-row items-center gap-12 md:gap-20 ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}
             >
+              {/* Text */}
               <div className="md:w-1/2">
-                <span
-                  className="text-xs font-bold tracking-widest uppercase mb-3 block"
-                  style={{ color: "rgba(99,102,241,0.6)" }}
-                >Step {step.num}</span>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: "#F1EEE9" }}>{step.title}</h3>
-                <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{step.desc}</p>
-              </div>
-              <div className="md:w-1/2 flex justify-center">
-                <div
-                  className="w-44 h-44 rounded-3xl flex items-center justify-center text-6xl animate-pulse-glow"
+                <p
+                  className="label-caps mb-3"
+                  style={{ color: C.copper, fontSize: "0.65rem" }}
+                >
+                  Chapter {step.numeral}
+                </p>
+                <h3
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(99,102,241,0.2)",
+                    fontFamily: "Georgia, serif",
+                    fontSize: "1.5rem",
+                    color: C.ink,
+                    marginBottom: "1rem",
+                    fontWeight: 700,
                   }}
                 >
-                  {step.icon}
+                  {step.title}
+                </h3>
+                <p style={{ fontSize: "0.95rem", lineHeight: 1.8, color: C.sepia, fontStyle: "italic" }}>
+                  {step.desc}
+                </p>
+              </div>
+
+              {/* Numeral block */}
+              <div className="md:w-1/2 flex justify-center">
+                <div
+                  className="w-40 h-40 rounded-2xl flex items-center justify-center"
+                  style={{
+                    background: C.bgCard,
+                    border: `1px solid ${C.borderLight}`,
+                    boxShadow: "0 4px 24px rgba(92,71,51,0.07)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      fontSize: "4.5rem",
+                      fontStyle: "italic",
+                      color: C.copper,
+                      opacity: 0.5,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {step.numeral}
+                  </span>
                 </div>
               </div>
             </div>
@@ -706,18 +717,31 @@ function HowItWorksSection() {
 ───────────────────────────────────────────────────────── */
 function BookShowcase() {
   return (
-    <section className="py-20 px-6 overflow-hidden" style={{ zIndex: 1 }}>
+    <section
+      className="py-20 px-6 overflow-hidden"
+      style={{ background: C.bgEspresso, borderTop: `1px solid rgba(196,154,60,0.08)` }}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
+          <p className="label-caps mb-3" style={{ color: "rgba(196,154,60,0.5)" }}>
+            The Collection
+          </p>
           <h2
-            className="font-bold mb-3"
-            style={{ fontSize: "clamp(1.75rem,3.5vw,2.5rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(1.75rem,3.5vw,2.4rem)",
+              color: C.parchment,
+              letterSpacing: "-0.02em",
+            }}
           >
-            Already analysed{" "}
-            <span className="text-gradient">4.2 million books</span>
+            Already across{" "}
+            <em className="text-gradient-sepia">4.2 million volumes.</em>
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.4)" }}>
-            From bestsellers to obscure classics — every genre, every language.
+          <p
+            className="mt-3"
+            style={{ color: "rgba(237,224,204,0.38)", fontStyle: "italic", fontSize: "0.9rem" }}
+          >
+            Every genre. Every language. Every era of human thought.
           </p>
         </div>
 
@@ -725,27 +749,43 @@ function BookShowcase() {
           className="flex gap-4 overflow-x-auto pb-3 justify-start md:justify-center"
           style={{ scrollbarWidth: "none" }}
         >
-          {books.map((book) => (
+          {books.map(book => (
             <div
               key={book.title}
-              className="flex-shrink-0 w-36 glass-card-hover cursor-pointer rounded-xl overflow-hidden"
-              style={{ border: `1px solid ${book.accent}25` }}
+              className="flex-shrink-0 w-32 rounded-sm overflow-hidden card-espresso cursor-pointer"
             >
+              {/* Cover */}
               <div
-                className="h-48 flex items-center justify-center text-4xl relative overflow-hidden"
-                style={{ background: `linear-gradient(145deg, ${book.color}, ${book.accent}35)` }}
+                className="h-44 relative flex items-center justify-center text-3xl"
+                style={{ background: `linear-gradient(180deg, ${book.spine}, ${book.accent}40)` }}
               >
                 <div
                   className="absolute inset-0"
-                  style={{ background: `radial-gradient(circle at 40% 35%, ${book.accent}25, transparent 65%)` }}
+                  style={{ background: `radial-gradient(circle at 40% 30%, rgba(255,255,255,0.06), transparent 60%)` }}
+                />
+                {/* Spine line */}
+                <div
+                  className="absolute left-2 top-0 bottom-0 w-px"
+                  style={{ background: `rgba(255,255,255,0.08)` }}
                 />
                 <span className="relative z-10">{book.emoji}</span>
               </div>
               <div className="p-3">
-                <p className="font-semibold text-xs leading-tight mb-1" style={{ color: "#F1EEE9" }}>
+                <p
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontSize: "0.72rem",
+                    color: C.parchment,
+                    fontWeight: 600,
+                    lineHeight: 1.3,
+                    marginBottom: "0.25rem",
+                  }}
+                >
                   {book.title}
                 </p>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{book.author}</p>
+                <p className="label-caps" style={{ color: "rgba(237,224,204,0.35)", fontSize: "0.55rem" }}>
+                  {book.author}
+                </p>
               </div>
             </div>
           ))}
@@ -758,53 +798,91 @@ function BookShowcase() {
 /* ─────────────────────────────────────────────────────────
    TESTIMONIALS
 ───────────────────────────────────────────────────────── */
-function TestimonialsSection() {
+function Testimonials() {
   return (
-    <section className="py-28 px-6 relative overflow-hidden" style={{ zIndex: 1 }}>
-      <div className="absolute inset-0 section-glow-right pointer-events-none" />
-      <div className="max-w-7xl mx-auto">
+    <section style={{ background: C.bgParchment }}>
+      <div className="max-w-7xl mx-auto px-6 py-28">
         <div className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5 text-xs font-bold uppercase tracking-widest"
-            style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "#FCD34D" }}
-          >Testimonials</div>
+          <p className="label-caps mb-4" style={{ color: C.gold }}>Testimonials</p>
           <h2
-            className="font-bold"
-            style={{ fontSize: "clamp(2rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(2rem,4vw,3rem)",
+              color: C.ink,
+              letterSpacing: "-0.02em",
+            }}
           >
-            Loved by <span style={{ color: "#F59E0B" }}>127,000+</span> readers
+            Trusted by{" "}
+            <em className="text-gradient-sepia">127,000 readers.</em>
           </h2>
+          <div className="max-w-sm mx-auto mt-6">
+            <Ornament />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="glass-card glass-card-hover rounded-2xl p-7 flex flex-col"
-            >
-              <div className="flex gap-1 mb-5" style={{ color: "#F59E0B" }}>
-                {Array.from({ length: 5 }).map((_, i) => <Icons.Star key={i} filled />)}
-              </div>
-              <p
-                className="text-sm leading-relaxed flex-1 mb-7 italic"
-                style={{ color: "rgba(255,255,255,0.6)" }}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {testimonials.map(t => (
+            <div key={t.name} className="card-parchment rounded-xl p-8 flex flex-col">
+              {/* Large opening quote */}
+              <div
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "5rem",
+                  lineHeight: 0.75,
+                  color: C.copper,
+                  opacity: 0.3,
+                  marginBottom: "0.5rem",
+                  userSelect: "none",
+                }}
               >
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;
+              </div>
+
+              <p
+                className="flex-1 mb-6"
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "0.92rem",
+                  fontStyle: "italic",
+                  lineHeight: 1.78,
+                  color: C.sepia,
+                }}
+              >
+                {t.quote}
               </p>
+
+              {/* Rule */}
+              <div style={{ borderTop: `1px solid ${C.borderFaint}`, marginBottom: "1rem" }} />
+
+              {/* Attribution */}
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                  style={{ background: t.avatarColor }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs flex-shrink-0"
+                  style={{
+                    background: C.bgEspresso,
+                    color: C.parchment,
+                    fontFamily: "Georgia, serif",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.05em",
+                  }}
                 >
-                  {t.avatar}
+                  {t.initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm" style={{ color: "#F1EEE9" }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.38)" }}>{t.role}</div>
+                  <p style={{ fontFamily: "Georgia, serif", fontSize: "0.85rem", color: C.ink, fontWeight: 600 }}>
+                    {t.name}
+                  </p>
+                  <p className="label-caps" style={{ color: C.muted, fontSize: "0.58rem" }}>
+                    {t.role}
+                  </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-sm font-bold" style={{ color: "#A5B4FC" }}>{t.books}</div>
-                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>books read</div>
+                  <p style={{ fontFamily: "Georgia, serif", fontSize: "1rem", color: C.gold, fontWeight: 700 }}>
+                    {t.books}
+                  </p>
+                  <p className="label-caps" style={{ color: C.muted, fontSize: "0.55rem" }}>
+                    volumes
+                  </p>
                 </div>
               </div>
             </div>
@@ -818,80 +896,141 @@ function TestimonialsSection() {
 /* ─────────────────────────────────────────────────────────
    PRICING
 ───────────────────────────────────────────────────────── */
-function PricingSection() {
+function Pricing() {
   return (
-    <section id="pricing" className="py-28 px-6 relative overflow-hidden" style={{ zIndex: 1 }}>
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,102,241,0.06) 0%, transparent 70%)" }}
-      />
-      <div className="max-w-5xl mx-auto">
+    <section id="pricing" style={{ background: C.bgCream }}>
+      <div className="max-w-5xl mx-auto px-6 py-28">
         <div className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5 text-xs font-bold uppercase tracking-widest"
-            style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.3)", color: "#A5B4FC" }}
-          >Pricing</div>
+          <p className="label-caps mb-4" style={{ color: C.gold }}>Pricing</p>
           <h2
-            className="font-bold mb-3"
-            style={{ fontSize: "clamp(2rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(2rem,4vw,3rem)",
+              color: C.ink,
+              letterSpacing: "-0.02em",
+            }}
           >
-            Simple, honest pricing
+            Honest prices.{" "}
+            <em className="text-gradient-sepia">No surprises.</em>
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.45)" }}>Start free, upgrade when you&apos;re ready.</p>
+          <div className="max-w-sm mx-auto mt-6">
+            <Ornament />
+          </div>
+          <p className="mt-4" style={{ color: C.muted, fontStyle: "italic" }}>
+            Begin freely. Ascend when you are ready.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {plans.map((plan) => (
+          {plans.map(plan => (
             <div
               key={plan.name}
-              className="relative rounded-2xl p-8"
+              className="relative rounded-xl p-8"
               style={{
-                background: plan.colorBg,
-                border: `1px solid ${plan.border}`,
-                boxShadow: plan.badge ? "0 0 80px rgba(99,102,241,0.12)" : "none",
+                background: plan.style === "featured" ? C.bgEspresso : C.bgCard,
+                border: plan.style === "featured"
+                  ? `1px solid rgba(196,154,60,0.25)`
+                  : plan.style === "gold"
+                  ? `1px solid rgba(196,154,60,0.2)`
+                  : `1px solid ${C.borderLight}`,
+                boxShadow: plan.style === "featured" ? "0 12px 48px rgba(24,16,10,0.25)" : "none",
               }}
             >
               {plan.badge && (
                 <div
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
-                  style={{ background: "linear-gradient(135deg,#6366F1,#A855F7)", color: "#fff" }}
+                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 label-caps whitespace-nowrap px-4 py-1 rounded-sm"
+                  style={{
+                    background: C.bgEspresso,
+                    color: C.copper,
+                    border: `1px solid rgba(196,154,60,0.3)`,
+                    fontSize: "0.6rem",
+                  }}
                 >
                   {plan.badge}
                 </div>
               )}
 
-              <p className="font-bold text-lg mb-0.5" style={{ color: "#F1EEE9" }}>{plan.name}</p>
-              <p className="text-xs mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>{plan.desc}</p>
-
-              <div className="flex items-end gap-1 mb-7">
-                <span className="text-4xl font-bold" style={{ color: "#F1EEE9" }}>${plan.price}</span>
-                <span className="pb-1.5 text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>/ {plan.period}</span>
+              {/* Plan header */}
+              <div className="mb-6">
+                <p
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: plan.style === "featured" ? C.parchment : C.ink,
+                    marginBottom: "0.1rem",
+                  }}
+                >
+                  {plan.name}
+                </p>
+                <p
+                  className="label-caps mb-5"
+                  style={{ color: plan.style === "featured" ? "rgba(237,224,204,0.4)" : C.muted, fontSize: "0.58rem", fontStyle: "italic" }}
+                >
+                  {plan.latin}
+                </p>
+                <div className="flex items-end gap-1">
+                  <span
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      fontSize: "2.6rem",
+                      fontWeight: 700,
+                      color: plan.style === "featured" ? C.parchment : C.ink,
+                      lineHeight: 1,
+                    }}
+                  >
+                    ${plan.price}
+                  </span>
+                  <span
+                    className="pb-1.5 label-caps"
+                    style={{ color: plan.style === "featured" ? "rgba(237,224,204,0.4)" : C.muted, fontSize: "0.6rem" }}
+                  >
+                    / {plan.period}
+                  </span>
+                </div>
               </div>
 
               <button
-                className={`w-full py-3 rounded-xl text-sm font-semibold mb-7 transition-all ${plan.ctaStyle === "primary" ? "btn-primary text-white" : ""}`}
-                style={
-                  plan.ctaStyle === "border"
-                    ? { border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.8)" }
-                    : plan.ctaStyle === "gold"
-                    ? { border: "1px solid rgba(245,158,11,0.4)", color: "#F59E0B" }
-                    : {}
-                }
+                className={`w-full py-3 rounded text-sm mb-7 ${
+                  plan.style === "featured" ? "btn-cream" :
+                  plan.style === "gold" ? "btn-gold" :
+                  "btn-outline"
+                } label-caps`}
+                style={{ fontSize: "0.65rem" }}
               >
-                {plan.cta}
+                {plan.style === "gold" ? "Write to us" : plan.style === "featured" ? "Begin your trial" : "Start reading"}
               </button>
 
-              <div className="space-y-3.5">
-                {plan.features.map((f) => (
-                  <div key={f} className="flex items-center gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.72)" }}>
-                    <span className="flex-shrink-0" style={{ color: "#4ADE80" }}><Icons.Check /></span>
-                    {f}
+              {/* Divider */}
+              <div style={{ borderTop: `1px solid ${plan.style === "featured" ? "rgba(196,154,60,0.12)" : C.borderFaint}`, marginBottom: "1.25rem" }} />
+
+              <div className="space-y-3">
+                {plan.features.map(f => (
+                  <div key={f} className="flex items-center gap-2.5">
+                    <span style={{ color: "#5DCE71", flexShrink: 0 }}><Check /></span>
+                    <span
+                      style={{
+                        fontSize: "0.83rem",
+                        fontStyle: "italic",
+                        color: plan.style === "featured" ? "rgba(237,224,204,0.7)" : C.sepia,
+                      }}
+                    >
+                      {f}
+                    </span>
                   </div>
                 ))}
-                {plan.missing.map((f) => (
-                  <div key={f} className="flex items-center gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.2)" }}>
-                    <span className="flex-shrink-0 opacity-25"><Icons.Check /></span>
-                    {f}
+                {plan.missing.map(f => (
+                  <div key={f} className="flex items-center gap-2.5">
+                    <span style={{ color: "transparent", flexShrink: 0, opacity: 0.2 }}><Check /></span>
+                    <span
+                      style={{
+                        fontSize: "0.83rem",
+                        fontStyle: "italic",
+                        color: plan.style === "featured" ? "rgba(237,224,204,0.2)" : "rgba(92,71,51,0.25)",
+                      }}
+                    >
+                      {f}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -906,51 +1045,77 @@ function PricingSection() {
 /* ─────────────────────────────────────────────────────────
    FAQ
 ───────────────────────────────────────────────────────── */
-function FAQSection() {
+function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section id="faq" className="py-24 px-6 relative" style={{ zIndex: 1 }}>
-      <div className="max-w-3xl mx-auto">
+    <section id="faq" style={{ background: C.bgParchment }}>
+      <div className="max-w-2xl mx-auto px-6 py-24">
         <div className="text-center mb-14">
+          <p className="label-caps mb-4" style={{ color: C.gold }}>Enquiries</p>
           <h2
-            className="font-bold mb-3"
-            style={{ fontSize: "clamp(2rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(1.75rem,3.5vw,2.4rem)",
+              color: C.ink,
+              letterSpacing: "-0.02em",
+            }}
           >
-            Frequently asked questions
+            Frequently asked questions.
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.4)" }}>
-            Everything you need to know about PageMind.
-          </p>
+          <div className="max-w-xs mx-auto mt-6">
+            <Ornament />
+          </div>
         </div>
 
-        <div className="space-y-3">
+        <div>
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="glass-card rounded-2xl overflow-hidden cursor-pointer transition-all"
               style={{
-                border: open === i ? "1px solid rgba(99,102,241,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                borderTop: `1px solid ${C.borderFaint}`,
+                ...(i === faqs.length - 1 ? { borderBottom: `1px solid ${C.borderFaint}` } : {}),
               }}
-              onClick={() => setOpen(open === i ? null : i)}
             >
-              <div className="flex items-center justify-between p-6">
-                <span className="font-medium text-base pr-4" style={{ color: "#F1EEE9" }}>{faq.q}</span>
+              <button
+                className="w-full flex items-start justify-between py-5 text-left gap-4"
+                onClick={() => setOpen(open === i ? null : i)}
+              >
                 <span
-                  className="flex-shrink-0 transition-transform duration-200"
                   style={{
-                    color: "rgba(255,255,255,0.4)",
-                    transform: open === i ? "rotate(180deg)" : "rotate(0deg)",
+                    fontFamily: "Georgia, serif",
+                    fontSize: "0.95rem",
+                    color: C.ink,
+                    fontWeight: open === i ? 700 : 400,
+                    transition: "font-weight 0.2s",
                   }}
                 >
-                  <Icons.ChevronDown />
+                  {faq.q}
                 </span>
-              </div>
+                <span
+                  style={{
+                    color: C.muted,
+                    flexShrink: 0,
+                    marginTop: "0.15rem",
+                    transform: open === i ? "rotate(180deg)" : "rotate(0)",
+                    transition: "transform 0.25s ease",
+                  }}
+                >
+                  <ChevronDown />
+                </span>
+              </button>
               {open === i && (
-                <div className="px-6 pb-6 -mt-2">
-                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.52)" }}>
-                    {faq.a}
-                  </p>
-                </div>
+                <p
+                  style={{
+                    fontFamily: "Georgia, serif",
+                    fontStyle: "italic",
+                    fontSize: "0.9rem",
+                    lineHeight: 1.8,
+                    color: C.muted,
+                    paddingBottom: "1.25rem",
+                  }}
+                >
+                  {faq.a}
+                </p>
               )}
             </div>
           ))}
@@ -961,52 +1126,79 @@ function FAQSection() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   CTA BANNER
+   CTA
 ───────────────────────────────────────────────────────── */
-function CTASection() {
+function CTA() {
   return (
-    <section className="py-20 px-6 relative" style={{ zIndex: 1 }}>
-      <div className="max-w-4xl mx-auto">
+    <section style={{ background: C.bgEspresso }}>
+      <div className="max-w-4xl mx-auto px-6 py-24">
         <div
-          className="relative rounded-3xl p-12 sm:p-16 text-center overflow-hidden"
+          className="relative rounded-2xl corner-ornament"
           style={{
-            background: "linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(139,92,246,0.1) 50%, rgba(245,158,11,0.07) 100%)",
-            border: "1px solid rgba(99,102,241,0.22)",
-            boxShadow: "0 0 120px rgba(99,102,241,0.08), inset 0 0 60px rgba(99,102,241,0.04)",
+            background: C.bgWalnut,
+            border: `1px solid rgba(196,154,60,0.15)`,
+            padding: "4rem 3rem",
+            textAlign: "center",
           }}
         >
-          {/* Orbit rings */}
+          {/* Subtle warm glow */}
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full pointer-events-none orbit-ring"
-          />
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full pointer-events-none orbit-ring-reverse"
+            className="absolute inset-0 rounded-2xl pointer-events-none"
+            style={{ background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(196,154,60,0.07) 0%, transparent 70%)" }}
           />
 
-          <div className="relative z-10">
-            <div className="text-5xl mb-6">📚</div>
-            <h2
-              className="font-bold mb-5"
-              style={{ fontSize: "clamp(1.75rem,4vw,3rem)", color: "#F1EEE9", letterSpacing: "-0.02em" }}
-            >
-              Start reading smarter <span className="text-gradient">today</span>
-            </h2>
-            <p className="mb-8 max-w-xl mx-auto text-lg" style={{ color: "rgba(255,255,255,0.5)" }}>
-              Join 127,000 readers who have reclaimed their time without sacrificing intellectual depth.
+          <div className="relative">
+            <p className="label-caps mb-5" style={{ color: "rgba(196,154,60,0.5)" }}>
+              Begin today
             </p>
+            <h2
+              style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "clamp(1.75rem,4vw,3rem)",
+                color: C.parchment,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.15,
+                marginBottom: "1rem",
+              }}
+            >
+              Read smarter.
+              <br />
+              <em className="text-gradient-sepia">Think deeper.</em>
+            </h2>
+
+            <div className="max-w-xs mx-auto my-6">
+              <Ornament symbol="✦" light />
+            </div>
+
+            <p
+              style={{
+                fontFamily: "Georgia, serif",
+                fontStyle: "italic",
+                fontSize: "1rem",
+                color: "rgba(237,224,204,0.5)",
+                maxWidth: "30rem",
+                margin: "0 auto 2.5rem",
+                lineHeight: 1.75,
+              }}
+            >
+              Join 127,000 scholars and professionals who have reclaimed their time
+              without surrendering intellectual depth.
+            </p>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary text-white font-semibold px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2">
-                Get started for free <Icons.ArrowRight />
+              <button className="btn-cream label-caps px-8 py-4 rounded flex items-center justify-center gap-2">
+                Get started free <ArrowRight />
               </button>
               <button
-                className="font-medium px-8 py-4 rounded-xl text-base transition-all hover:bg-white/5"
-                style={{ border: "1px solid rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.65)" }}
+                className="btn-outline label-caps px-8 py-4 rounded"
+                style={{ borderColor: "rgba(196,154,60,0.2)", color: "rgba(237,224,204,0.5)" }}
               >
-                View live demo
+                View a live demo
               </button>
             </div>
-            <p className="mt-5 text-xs" style={{ color: "rgba(255,255,255,0.28)" }}>
-              Free forever · No credit card · Cancel anytime
+
+            <p className="label-caps mt-5" style={{ color: "rgba(255,255,255,0.18)", fontSize: "0.6rem" }}>
+              Free perpetually &ensp;·&ensp; No card required &ensp;·&ensp; Cancel whenever you wish
             </p>
           </div>
         </div>
@@ -1021,42 +1213,66 @@ function CTASection() {
 function Footer() {
   return (
     <footer
-      className="py-14 px-6 relative"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.06)", zIndex: 1 }}
+      style={{
+        background: C.bgCream,
+        borderTop: `1px solid ${C.borderFaint}`,
+      }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+          {/* Brand */}
           <div className="col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                style={{ background: "linear-gradient(135deg,#6366F1,#A855F7)" }}
-              >P</div>
-              <span className="font-semibold text-white text-lg tracking-tight">
-                Page<span className="text-gradient">Mind</span>
+                className="w-7 h-7 rounded flex items-center justify-center text-xs font-bold"
+                style={{ background: C.bgEspresso, color: C.parchment, fontFamily: "Georgia, serif" }}
+              >
+                P
+              </div>
+              <span style={{ fontFamily: "Georgia, serif", color: C.ink, fontSize: "1.05rem" }}>
+                Page<em>Mind</em>
               </span>
             </div>
-            <p className="text-sm leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.38)" }}>
-              Multi-agent AI that transforms books into actionable wisdom. Read more, retain more, achieve more.
+            <p
+              style={{
+                fontFamily: "Georgia, serif",
+                fontStyle: "italic",
+                fontSize: "0.85rem",
+                lineHeight: 1.7,
+                color: C.muted,
+                maxWidth: "18rem",
+              }}
+            >
+              Multi-agent AI that transforms books into
+              actionable wisdom. Read more. Retain more.
+              Achieve more.
             </p>
           </div>
 
           {[
-            { title: "Product", links: ["Features", "Pricing", "API", "Changelog", "Status"] },
-            { title: "Company", links: ["About", "Blog", "Careers", "Press", "Partners"] },
-            { title: "Legal", links: ["Privacy", "Terms", "Security", "Cookies"] },
-          ].map((col) => (
+            { title: "Product",  links: ["Features", "Pricing", "API", "Changelog"] },
+            { title: "Company",  links: ["About", "Blog", "Careers", "Press"] },
+            { title: "Legal",    links: ["Privacy", "Terms", "Security", "Cookies"] },
+          ].map(col => (
             <div key={col.title}>
-              <h4 className="font-semibold text-sm mb-4" style={{ color: "rgba(255,255,255,0.65)" }}>
+              <h4 className="label-caps mb-4" style={{ color: C.sepia }}>
                 {col.title}
               </h4>
               <ul className="space-y-3">
-                {col.links.map((link) => (
+                {col.links.map(link => (
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm transition-colors hover:text-white"
-                      style={{ color: "rgba(255,255,255,0.32)" }}
+                      style={{
+                        fontFamily: "Georgia, serif",
+                        fontStyle: "italic",
+                        fontSize: "0.85rem",
+                        color: C.muted,
+                        transition: "color 0.2s",
+                        display: "block",
+                      }}
+                      onMouseEnter={e => ((e.target as HTMLElement).style.color = C.sepia)}
+                      onMouseLeave={e => ((e.target as HTMLElement).style.color = C.muted)}
                     >
                       {link}
                     </a>
@@ -1067,17 +1283,15 @@ function Footer() {
           ))}
         </div>
 
-        <div
-          className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-        >
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
-            © 2026 PageMind. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
-            <span>Built with</span>
-            <span style={{ color: "#6366F1" }}>♥</span>
-            <span>for readers everywhere</span>
+        <div style={{ borderTop: `1px solid ${C.borderFaint}`, paddingTop: "2rem" }}>
+          <Ornament symbol="·" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
+            <p className="label-caps" style={{ color: "rgba(153,134,116,0.55)", fontSize: "0.6rem" }}>
+              © 2026 PageMind. All rights reserved.
+            </p>
+            <p className="label-caps" style={{ color: "rgba(153,134,116,0.45)", fontSize: "0.6rem" }}>
+              Crafted with devotion &ensp;·&ensp; For readers everywhere
+            </p>
           </div>
         </div>
       </div>
@@ -1086,22 +1300,21 @@ function Footer() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   PAGE ROOT
+   ROOT
 ───────────────────────────────────────────────────────── */
 export default function Home() {
   return (
-    <main style={{ background: "#08071A", minHeight: "100vh" }}>
-      <Stars />
+    <main style={{ fontFamily: "Georgia, 'Times New Roman', Times, serif" }}>
       <Navbar />
-      <HeroSection />
+      <Hero />
       <StatsBar />
-      <FeaturesSection />
-      <HowItWorksSection />
+      <Features />
+      <Method />
       <BookShowcase />
-      <TestimonialsSection />
-      <PricingSection />
-      <FAQSection />
-      <CTASection />
+      <Testimonials />
+      <Pricing />
+      <FAQ />
+      <CTA />
       <Footer />
     </main>
   );
