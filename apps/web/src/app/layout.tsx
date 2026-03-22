@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FictionAget",
-  description: "AI-powered fiction generation agent",
+  title: "PageMind — AI Book Summaries in 60 Seconds",
+  description: "Multi-agent AI that transforms any book into actionable wisdom. Deep analysis, chapter breakdowns, and key insights delivered in under a minute.",
 };
 
 export default function RootLayout({
