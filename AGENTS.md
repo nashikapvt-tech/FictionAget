@@ -1,4 +1,4 @@
-# Agent Steering Document — AI-Native Monorepo
+# Agent Steering Document — FictionAget
 
 ## Repository Layout
 

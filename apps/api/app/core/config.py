@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     )
 
     # App
-    APP_NAME: str = "AI-Native Monorepo API"
+    APP_NAME: str = "FictionAget API"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
 

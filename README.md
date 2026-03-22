@@ -1,11 +1,11 @@
-# AI-Native Monorepo
+# FictionAget
 
 A production-ready monorepo template for **human and AI agent collaboration**. Next.js + FastAPI + shared types pipeline + agent memory + skills system — all wired together.
 
 ## Use as a Template
 
 ```bash
-git clone https://github.com/whyujjwal/AgentOptimisedMonorepo.git my-project
+git clone https://github.com/YOUR_ORG/fiction-aget.git my-project
 cd my-project
 bash skills/init/run.sh
 ```

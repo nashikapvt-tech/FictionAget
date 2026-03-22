@@ -1,4 +1,4 @@
-# ── AI-Native Monorepo — Local Dev Entrypoint ─────────────────────────────────
+# ── FictionAget — Local Dev Entrypoint ─────────────────────────────────
 # Run `make help` to see all available targets.
 #
 # Package managers: pnpm (JS/TS), uv (Python) — never npm/pip directly.
@@ -8,10 +8,10 @@
 GCP_PROJECT  ?= $(shell gcloud config get-value project 2>/dev/null || echo "")
 GCP_REGION   ?= us-central1
 GAR_LOCATION ?= us-central1
-GAR_REPO     ?= monorepo
+GAR_REPO     ?= fiction-aget
 IMAGE_TAG    ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "dev")
 
-UV      := /opt/homebrew/bin/uv
+UV      := $(shell command -v uv 2>/dev/null || echo $$HOME/.local/bin/uv)
 PNPM    := pnpm
 TURBO   := $(PNPM) turbo
 
@@ -41,10 +41,17 @@ setup: ## First-time setup: copy .env files and install all dependencies
 	@echo "✓ Setup complete. Edit .env files with your config before running \`make dev\`."
 
 # ── Development ────────────────────────────────────────────────────────────────
-dev: ## Start full local stack: Postgres+API via Docker, web via Next.js dev server
-	@echo "==> Starting Docker stack (API + Postgres)..."
-	bash skills/docker/run.sh up
-	@echo "==> Starting web dev server..."
+dev: ## Start full local stack: API via uvicorn + web via Next.js (run in separate terminals)
+	@echo "==> Run 'make dev-api' and 'make dev-web' in separate terminals."
+	@echo "    Or: make dev-api &  make dev-web"
+
+dev-api: ## Start FastAPI backend locally (SQLite, no Docker required)
+	@echo "==> Applying migrations..."
+	cd apps/api && $(UV) run alembic upgrade head
+	@echo "==> Starting FastAPI on http://localhost:8000 ..."
+	cd apps/api && $(UV) run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+dev-web: ## Start Next.js frontend dev server
 	$(TURBO) run dev --filter=web
 
 build: ## Build all packages via Turborepo

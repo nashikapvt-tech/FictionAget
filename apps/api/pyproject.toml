@@ -1,7 +1,7 @@
 [project]
 name = "api"
 version = "0.1.0"
-description = "FastAPI backend for the AI-Native Monorepo"
+description = "FastAPI backend for the FictionAget"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",

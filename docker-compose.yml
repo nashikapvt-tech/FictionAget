@@ -3,18 +3,18 @@ services:
   # ── PostgreSQL ──────────────────────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: monorepo_postgres
+    container_name: fiction_aget_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-monorepo}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-monorepo}
-      POSTGRES_DB: ${POSTGRES_DB:-monorepo}
+      POSTGRES_USER: ${POSTGRES_USER:-fiction_aget}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fiction_aget}
+      POSTGRES_DB: ${POSTGRES_DB:-fiction_aget}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-monorepo} -d ${POSTGRES_DB:-monorepo}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fiction_aget} -d ${POSTGRES_DB:-fiction_aget}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,13 +24,13 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: monorepo_api
+    container_name: fiction_aget_api
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-monorepo}:${POSTGRES_PASSWORD:-monorepo}@postgres:5432/${POSTGRES_DB:-monorepo}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-fiction_aget}:${POSTGRES_PASSWORD:-fiction_aget}@postgres:5432/${POSTGRES_DB:-fiction_aget}
       MEMORY_DB_PATH: .data/chromadb
       LOG_JSON: "true"
       LOG_LEVEL: ${LOG_LEVEL:-INFO}

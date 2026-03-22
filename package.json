@@ -1,5 +1,5 @@
 {
-  "name": "ai-native-monorepo",
+  "name": "fiction-aget",
   "private": true,
   "scripts": {
     "build": "turbo run build",

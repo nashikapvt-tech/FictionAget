@@ -13,7 +13,7 @@ env:
   GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   GCP_REGION:     ${{ vars.GCP_REGION || 'us-central1' }}
   GAR_LOCATION:   ${{ vars.GAR_LOCATION || 'us-central1' }}
-  GAR_REPO:       ${{ vars.GAR_REPO || 'monorepo' }}
+  GAR_REPO:       ${{ vars.GAR_REPO || 'fiction-aget' }}
 
 jobs:
   # ── Deploy API ──────────────────────────────────────────────────────────────

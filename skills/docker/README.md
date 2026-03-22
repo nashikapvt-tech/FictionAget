@@ -6,8 +6,8 @@ Manages the full local stack (FastAPI API + PostgreSQL) via Docker Compose.
 
 | Service | Container | Port | Description |
 |---------|-----------|------|-------------|
-| `api` | `monorepo_api` | 8000 | FastAPI backend |
-| `postgres` | `monorepo_postgres` | 5432 | PostgreSQL 16 |
+| `api` | `fiction_aget_api` | 8000 | FastAPI backend |
+| `postgres` | `fiction_aget_postgres` | 5432 | PostgreSQL 16 |
 
 ChromaDB is embedded inside the `api` container and persists in the `chromadb_data` volume.
 
